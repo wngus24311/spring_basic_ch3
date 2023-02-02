@@ -15,7 +15,6 @@ public class Main1 {
         Engine engine = (Engine) getObject("engine");
         System.out.println("car = " + car);
         System.out.println("engine = " + engine);
-        System.out.println("engine = " + engine);
     }
 
     static Object getObject(String key) throws Exception {
