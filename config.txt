@@ -1,2 +1,2 @@
-car=com.fastcampus.ch3.diCopy1.Truck
-engine=com.fastcampus.ch3.diCopy1.Engine
+car=com.fastcampus.ch3.diCopy4.Car
+engine=com.fastcampus.ch3.diCopy4.Engine
