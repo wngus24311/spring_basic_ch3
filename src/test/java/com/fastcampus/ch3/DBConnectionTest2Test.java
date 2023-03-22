@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -183,6 +184,41 @@ public class DBConnectionTest2Test {
         pstmt.setString(5, user.getId());
 
         return pstmt.executeUpdate();
+    }
+
+    @Test
+    public void transactionTest() throws Exception {
+        Connection connection = null;
+        try {
+            connection = ds.getConnection();
+            connection.setAutoCommit(true);
+
+//        insert into user_info (id, pwd, name, email, birth, sns, reg_date)
+//        values ('asdf2', '1234', 'smith', 'aaaa@aaaa.com', '2021-01-01', 'facebook', now());
+
+            String sql = "insert into user_info values (?, ?, ?, ?, ?, ?, now())";
+
+            // 기존 Statement 보다 향상된 점 : SQL Injection공격, 성능향상(캐싱 효과가 있음)
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, "asdf");
+            pstmt.setString(2, "1234");
+            pstmt.setString(3, "abc");
+            pstmt.setString(4, "aaa@aaa.com");
+//        pstmt.setDate( 5, (java.sql.Date)new Date(user.getBirth().getTime()));
+            pstmt.setDate(5, new java.sql.Date(new Date().getTime()));
+            pstmt.setString(6, "fb");
+
+            int rowCnt = pstmt.executeUpdate(); // insert, delete, update 일때 씀
+
+            pstmt.setString(1, "asdf");
+            rowCnt = pstmt.executeUpdate();
+
+            connection.commit();
+
+        } catch (Exception e) {
+            connection.rollback();
+            throw new RuntimeException(e);
+        }
     }
 
 }
